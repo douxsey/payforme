@@ -2,6 +2,7 @@
   <div class="col-sm-12">
     <h4>Liste des paiements</h4>
     <button v-on:click="sort()"  class="btn btn-primary">Trier</button>
+    <button v-on:click="fetchPayments()"  class="btn btn-primary">Recup payments</button>
 
     
     <div class="col-sm-6">
@@ -35,36 +36,13 @@
 
 <script>
 let taxes = 8;
+import paymentService from "../../services/paymentService"
 export default {
   name: 'PaymentList',
   data: function () {
     return {
       filterName: null,
-      payments: [{
-        id: 1,
-        amount: 120000,
-        user: {
-          name: "Seck Domram"
-        },
-        receiver: {
-          name: "Sa copine Tapha pata"
-        },
-        service: {
-          name: "Orange money"
-        }
-      }, {
-        id: 2,
-        amount: 5000,
-        user: {
-          name: "Seck Domram"
-        },
-        receiver: {
-          name: "Sa copine Dieye"
-        },
-        service: {
-          name: "Joni Joni"
-        }
-      }]
+      payments: []
     }
   },
   methods: {
@@ -76,6 +54,12 @@ export default {
       this.payments = this.payments.sort((firstPayment, secondPayment) => {
         return firstPayment.amount - secondPayment.amount
       })
+    },
+    fetchPayments: function () {
+      // paymentService.getPayments()
+      //   .then(payments => {
+      //     this.payments = payments;
+      //   })
     }
   },
   computed: {
@@ -93,8 +77,15 @@ export default {
         return payment.receiver.name.toLowerCase().includes(filtre.toLowerCase())
       })
     }
+  },
+  created: function () {
+    
+    paymentService.getPayments()
+    .then(payments => {
+      this.payments = payments;
+    })
   }
-  }
+}
 </script>
 
 <style scoped>
